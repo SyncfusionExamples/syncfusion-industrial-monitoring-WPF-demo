@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using Syncfusion.IndustrialMonitoring.POC.ViewModels;
 using Syncfusion.SfSkinManager;
-using Syncfusion.Licensing;
 
 namespace Syncfusion.IndustrialMonitoring.POC
 {
@@ -12,9 +11,6 @@ namespace Syncfusion.IndustrialMonitoring.POC
 
         public MainWindow()
         {
-            // Register Syncfusion license FIRST (required for all controls)
-            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JBaF5cXGhAd1p/WGJbYl1xZFdFallYTnNWSV9jS3hTcURkWHddeXVXQ2dbVU91Wg==");
-
             // Enable theme as default style for framework controls
             SfSkinManager.SfSkinManager.ApplyThemeAsDefaultStyle = true;
             // Apply Windows11Light theme to this window and all child controls

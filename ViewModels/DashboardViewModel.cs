@@ -17,6 +17,8 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         private TrendChartViewModel _trendVM;
         private GaugeViewModel _gaugeVM;
         private AlarmGridViewModel _alarmVM;
+        private readonly ReportService _reportService;
+        private readonly IDialogService _dialogService;
         private bool _isLiveUpdating = true;
         private int _updateInterval = 100;
         private StatusSummary _statusSummary;
@@ -72,9 +74,17 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         }
 
         public ICommand ToggleRtlCommand { get; }
+        public ICommand ExportPdfReportCommand { get; }
+        public ICommand ExportExcelReportCommand { get; }
 
-        public DashboardViewModel()
+        public DashboardViewModel() : this(new ReportService(), new DialogService())
         {
+        }
+
+        public DashboardViewModel(ReportService reportService, IDialogService dialogService)
+        {
+            _reportService = reportService;
+            _dialogService = dialogService;
             _dataService = new DataService();
             _liveService = new LiveUpdateService(_dataService);
 
@@ -88,6 +98,10 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             _gaugeVM.AlarmRaised += (alarm) => _alarmVM.AddAlarm(alarm);
 
             ToggleRtlCommand = CreateCommand(ToggleRtl);
+            ExportPdfReportCommand = CreateCommand(() => ExportReport(
+                "تصدير تقرير PDF", "ملف PDF (*.pdf)|*.pdf", "pdf", _reportService.GeneratePdfReport));
+            ExportExcelReportCommand = CreateCommand(() => ExportReport(
+                "تصدير تقرير Excel", "ملف Excel (*.xlsx)|*.xlsx", "xlsx", _reportService.GenerateExcelReport));
 
             _liveService.Start();
             UpdateStatus();
@@ -103,10 +117,55 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         {
             StatusSummary.LastUpdateTime = DateTime.Now;
             StatusSummary.ActiveAlarmsCount = _alarmVM.AlarmHistory.Count(a => a.Status == ArabicMap.StatusOpen);
-            StatusSummary.GoodSensorsCount = 2;
-            StatusSummary.BadSensorsCount = 0;
-            StatusSummary.StaleSensorsCount = 1;
+
+            // Derived from the live readings (stale = above the warning limit, bad = above the alarm limit)
+            var sensors = _gaugeVM.GetSnapshots();
+            StatusSummary.GoodSensorsCount = sensors.Count(s => s.Quality == DataQuality.Good);
+            StatusSummary.BadSensorsCount = sensors.Count(s => s.Quality == DataQuality.Bad);
+            StatusSummary.StaleSensorsCount = sensors.Count(s => s.Quality == DataQuality.Stale);
             RaisePropertyChanged(nameof(StatusSummary));
+        }
+
+        private ReportData CreateReportSnapshot()
+        {
+            UpdateStatus();
+            var summary = StatusSummary;
+            return new ReportData
+            {
+                GeneratedAt = DateTime.Now,
+                Sensors = _gaugeVM.GetSnapshots(),
+                Summary = new StatusSummary
+                {
+                    GoodSensorsCount = summary.GoodSensorsCount,
+                    BadSensorsCount = summary.BadSensorsCount,
+                    StaleSensorsCount = summary.StaleSensorsCount,
+                    ActiveAlarmsCount = summary.ActiveAlarmsCount,
+                    LastUpdateTime = summary.LastUpdateTime
+                },
+                Trend = _trendVM.TrendData.ToList(),
+                TrendConfig = _gaugeVM.TempConfig,
+                Alarms = _alarmVM.AlarmHistory.ToList()
+            };
+        }
+
+        private void ExportReport(string title, string filter, string extension, Action<ReportData, string> generate)
+        {
+            var defaultName = $"تقرير_المراقبة_{DateTime.Now:yyyyMMdd_HHmmss}.{extension}";
+            var path = _dialogService.ShowSaveFileDialog(title, filter, defaultName);
+            if (path == null) return;
+
+            try
+            {
+                generate(CreateReportSnapshot(), path);
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowError($"تعذر إنشاء التقرير: {ex.Message}", title);
+                return;
+            }
+
+            if (_dialogService.Confirm("تم إنشاء التقرير بنجاح. هل تريد فتحه الآن؟", title))
+                _dialogService.OpenFile(path);
         }
 
         private void ToggleRtl()

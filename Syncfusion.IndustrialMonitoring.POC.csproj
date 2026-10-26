@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.6" />
+    <PackageReference Include="Syncfusion.Pdf.Wpf" Version="35.1.41" />
     <PackageReference Include="Syncfusion.SfChart.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.SfGauge.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.SfGrid.WPF" Version="35.1.41" />
@@ -20,6 +21,12 @@
     <PackageReference Include="Syncfusion.Themes.Windows11Light.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.DataGridExcelExport.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.XlsIO.Wpf" Version="35.1.41" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+  </ItemGroup>
+
+  <!-- Optional local license key (git-ignored); see README "License" -->
+  <ItemGroup>
+    <None Include="SyncfusionLicense.txt" Condition="Exists('SyncfusionLicense.txt')" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Arabic localization: LogicalName ensures GridResourceWrapper finds Syncfusion.SfGrid.WPF.ar.resources -->

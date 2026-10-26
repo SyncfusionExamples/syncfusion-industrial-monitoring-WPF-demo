@@ -9,7 +9,7 @@ A minimal WPF/.NET 9 proof-of-concept demonstrating Syncfusion components for SC
 ✅ **Virtualized Alarm Grid** — Historical alarm/event display with sorting/filtering  
 ✅ **Dashboard** — Composed view with chart, gauges, grid, status summary  
 ✅ **Live Updates** — 100 ms batched synthetic data (configurable)  
-✅ **Export Ready** — PDF and Excel export hooks  
+✅ **PDF & Excel Reports** — Arabic RTL reports via Syncfusion PDF Library and XlsIO  
 ✅ **RTL Support** — Toggle for right-to-left layout  
 
 ## Quick Start
@@ -73,8 +73,27 @@ MainWindow.xaml      - Main window
 1. **Run the app** — Dashboard displays live-updating chart, gauges, and alarms
 2. **Adjust Update Interval** — Slider in toolbar (50–1000 ms)
 3. **Toggle Live Mode** — Checkbox pauses/resumes updates
-4. **Export Data** — PDF/Excel buttons (scaffolded)
+4. **Export Reports** — Toolbar buttons "تقرير PDF" / "تقرير Excel" generate a report from the current dashboard state (see below)
 5. **Toggle RTL** — Right-to-left layout toggle for Arabic/RTL languages
+
+## Reports
+
+Both reports are built by `Services/ReportService.cs` from one snapshot of the dashboard and are fully Arabic / right-to-left.
+
+**PDF report** (Syncfusion PDF Library)
+- Header band and generation time
+- KPI table: current value, warning/alarm limits and status per sensor, plus sensor/alarm counts
+- Temperature trend drawn as vector graphics, with warning and alarm limit lines
+- Alarm log table (latest 200) that paginates with a repeating header, and page numbers
+
+**Excel report** (XlsIO)
+- `الملخص` (Summary): KPIs with status colouring
+- `بيانات الاتجاه` (Trend data): trend values, conditional formatting above the limits, and a native Excel line chart
+- `الإنذارات` (Alarms): full alarm log with auto-filter, frozen header and critical rows highlighted
+
+## Alarms
+
+Alarms are edge-triggered: a sensor raises one alarm when it crosses its alarm limit and re-arms only after dropping 5 units below it, so a value hovering above the limit does not flood the alarm grid.
 
 ## Data Source
 
@@ -121,8 +140,20 @@ To integrate with real data:
 
 ## License
 
-- No license key required for this demo (uses Syncfusion trial mode)
-- For production: Register license in App.xaml.cs using `SyncfusionLicenseProvider.RegisterLicense("YOUR_KEY")`
+The Syncfusion license key is **not** stored in source. At startup `LicenseKeyProvider` looks for it in this order:
+
+1. The `SYNCFUSION_LICENSE_KEY` environment variable
+2. A `SyncfusionLicense.txt` file in the project root (git-ignored, copied to the output folder on build)
+
+```powershell
+# Option 1: environment variable (current user)
+setx SYNCFUSION_LICENSE_KEY "YOUR_KEY"
+
+# Option 2: local file
+Set-Content SyncfusionLicense.txt "YOUR_KEY"
+```
+
+Without a key the controls still run but show the Syncfusion license banner.
 
 ## Next Steps
 

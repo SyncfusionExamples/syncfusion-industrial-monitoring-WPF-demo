@@ -27,6 +27,9 @@ publish/
 *.db-shm
 *.db-wal
 
+# Local Syncfusion license key (read at startup; never commit)
+SyncfusionLicense.txt
+
 # OS files
 Thumbs.db
 .DS_Store
