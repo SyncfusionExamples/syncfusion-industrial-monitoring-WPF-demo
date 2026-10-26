@@ -23,11 +23,14 @@
         <!-- Toolbar -->
         <Border Grid.Row="0" Background="DarkSlateGray" Padding="10">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <CheckBox IsChecked="{Binding IsLiveUpdating}" VerticalAlignment="Center" Margin="0,0,10,0">
+                <CheckBox Name="isLiveUpdating" IsChecked="{Binding IsLiveUpdating}" VerticalAlignment="Center" Margin="0,0,10,0">
                     <TextBlock Text="مباشر" Foreground="White" VerticalAlignment="Center"/>
                 </CheckBox>
                 <TextBlock Text="الفاصل الزمني (مللي ثانية):" Foreground="White" VerticalAlignment="Center" Margin="0,0,5,0" />
-                <Slider Value="{Binding UpdateInterval}" Minimum="50" Maximum="1000" Width="150" VerticalAlignment="Center" Margin="0,0,10,0" />
+                <Slider x:Name="updateIntervalSlider" Value="{Binding UpdateInterval, Mode=TwoWay}" Minimum="50" Maximum="1000"
+                        TickFrequency="50" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True"
+                        Width="150" VerticalAlignment="Center" Margin="0,0,5,0" />
+                <TextBlock Text="{Binding UpdateInterval}" Foreground="White" VerticalAlignment="Center" MinWidth="35" Margin="0,0,10,0" />
                 <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource RtlIconTemplate}" />
             </StackPanel>
         </Border>

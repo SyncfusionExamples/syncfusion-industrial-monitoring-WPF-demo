@@ -219,6 +219,10 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
                 });
             }
 
+            // Continue the live random walk from where the history ends so the
+            // trend line has no jump between historical and live data.
+            _lastValues[ArabicMap.SensorTemperature] = Math.Round(value, 2);
+
             return trends;
         }
     }

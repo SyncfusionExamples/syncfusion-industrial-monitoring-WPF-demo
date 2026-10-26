@@ -35,6 +35,14 @@
 
         <!-- Chart -->
         <syncfusion:SfChart x:Name="TrendChart" Grid.Row="1" Margin="5">
+            <!-- Category axis spaces points evenly per update, so the chart scrolls
+                 one slot per tick and the update interval is visible. -->
+            <syncfusion:SfChart.PrimaryAxis>
+                <syncfusion:CategoryAxis LabelFormat="HH:mm:ss" ShowGridLines="False" />
+            </syncfusion:SfChart.PrimaryAxis>
+            <syncfusion:SfChart.SecondaryAxis>
+                <syncfusion:NumericalAxis />
+            </syncfusion:SfChart.SecondaryAxis>
             <syncfusion:LineSeries ItemsSource="{Binding TrendVM.TrendData}"
                                    XBindingPath="Timestamp" 
                                    YBindingPath="Value"
