@@ -4,12 +4,19 @@
              xmlns:local="clr-namespace:Syncfusion.IndustrialMonitoring.POC.Views"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              FlowDirection="{Binding FlowDirection}"
-             Background="#F5F5F5">
+             Background="{DynamicResource PageBackground}">
     <UserControl.Resources>
         <!-- RTL Toggle Icon -->
         <DataTemplate x:Key="RtlIconTemplate">
             <Grid Width="16" Height="16">
                 <Path Data="M11,7L9.6,8.4l2.6,2.6H2v2h10.2l-2.6,2.6L11,17l5,-5l-5,-5zM20,19h-8v2h8c1.1,0 2,-0.9 2,-2V5c0,-1.1 -0.9,-2 -2,-2h-8v2h8v14z"
+                      Fill="#FFFFFF" Stretch="Fill"/>
+            </Grid>
+        </DataTemplate>
+        <!-- Theme Icon -->
+        <DataTemplate x:Key="ThemeIconTemplate">
+            <Grid Width="16" Height="16">
+                <Path Data="M12,3c-4.97,0 -9,4.03 -9,9s4.03,9 9,9s9,-4.03 9,-9s-4.03,-9 -9,-9zM12,19V5c3.86,0 7,3.14 7,7s-3.14,7 -7,7z"
                       Fill="#FFFFFF" Stretch="Fill"/>
             </Grid>
         </DataTemplate>
@@ -39,6 +46,7 @@
                         Width="150" VerticalAlignment="Center" Margin="0,0,5,0" />
                 <TextBlock Text="{Binding UpdateInterval}" Foreground="White" VerticalAlignment="Center" MinWidth="35" Margin="0,0,10,0" />
                 <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource RtlIconTemplate}" />
+                <syncfusion:ButtonAdv x:Name="toggleThemeButton" Command="{Binding ToggleThemeCommand}" Label="فاتح / داكن" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ThemeIconTemplate}" />
                 <syncfusion:ButtonAdv x:Name="exportPdfReportButton" Command="{Binding ExportPdfReportCommand}" Label="تقرير PDF" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
                 <syncfusion:ButtonAdv x:Name="exportExcelReportButton" Command="{Binding ExportExcelReportCommand}" Label="تقرير Excel" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
             </StackPanel>
@@ -56,7 +64,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Chart (top) -->
-            <Border Grid.Row="0" Background="White" Margin="10" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0">
+            <Border Grid.Row="0" Background="{DynamicResource CardBackground}" Margin="10" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}">
                 <local:TrendChartView />
             </Border>
 
@@ -69,18 +77,18 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- System Status Header (left) -->
-                <Border Grid.Column="0" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0" Padding="12" Margin="0,0,5,0">
+                <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="12" Margin="0,0,5,0">
                     <StackPanel>
-                        <TextBlock Text="حالة النظام" FontSize="13" FontWeight="Bold" Foreground="#1A1A1A" Margin="0,0,0,10" />
+                        <TextBlock Text="حالة النظام" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,10" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="آخر تحديث: " FontSize="10" Foreground="#666" />
-                            <TextBlock Text="{Binding StatusSummary.LastUpdateTime}" FontSize="10" Foreground="#666" />
+                            <TextBlock Text="آخر تحديث: " FontSize="10" Foreground="{DynamicResource TextSecondary}" />
+                            <TextBlock Text="{Binding StatusSummary.LastUpdateTime}" FontSize="10" Foreground="{DynamicResource TextSecondary}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
                 <!-- Bullet Graphs (center) - one status per row, with scroller -->
-                <Border Grid.Column="1" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0" Margin="5,0,5,0" Padding="8">
+                <Border Grid.Column="1" Background="{DynamicResource CardBackground}" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Margin="5,0,5,0" Padding="8">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -156,13 +164,13 @@
                 </Border>
 
                 <!-- Gauges (right) -->
-                <Border Grid.Column="2" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0" Padding="10" MinWidth="300">
+                <Border Grid.Column="2" Background="{DynamicResource CardBackground}" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="10" MinWidth="300">
                     <local:GaugeView />
                 </Border>
             </Grid>
 
             <!-- Alarm Grid (bottom) -->
-            <Border Grid.Row="2" Background="White" Margin="10,5" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0" Padding="10">
+            <Border Grid.Row="2" Background="{DynamicResource CardBackground}" Margin="10,5" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="10">
                 <local:AlarmGridView />
             </Border>
         </Grid>

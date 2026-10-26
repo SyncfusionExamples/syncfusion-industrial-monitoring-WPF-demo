@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Syncfusion.IndustrialMonitoring.POC"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
-             Background="White">
+             Background="{DynamicResource CardBackground}">
     <UserControl.Resources>
         <DataTemplate x:Key="ImageIconTemplate">
             <Grid Width="16" Height="16">
@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="تحليل الاتجاه" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1A1A1A"/>
+            <TextBlock Grid.Column="0" Text="تحليل الاتجاه" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
             <syncfusion:ButtonAdv Grid.Column="1" x:Name="ExportImageButton"
                                   Label="تصدير الصورة"
                                   Height="32" Width="130"
@@ -33,22 +33,53 @@
                                   Click="OnExportImageClick"/>
         </Grid>
 
-        <!-- Chart -->
-        <syncfusion:SfChart x:Name="TrendChart" Grid.Row="1" Margin="5">
-            <!-- Category axis spaces points evenly per update, so the chart scrolls
-                 one slot per tick and the update interval is visible. -->
-            <syncfusion:SfChart.PrimaryAxis>
-                <syncfusion:CategoryAxis LabelFormat="HH:mm:ss" ShowGridLines="False" />
-            </syncfusion:SfChart.PrimaryAxis>
-            <syncfusion:SfChart.SecondaryAxis>
-                <syncfusion:NumericalAxis />
-            </syncfusion:SfChart.SecondaryAxis>
-            <syncfusion:LineSeries ItemsSource="{Binding TrendVM.TrendData}"
-                                   XBindingPath="Timestamp" 
-                                   YBindingPath="Value"
-                                   StrokeThickness="2"
-                                   Interior="#0066CC">
-            </syncfusion:LineSeries>
-        </syncfusion:SfChart>
+        <TabControl Grid.Row="1" Margin="5,0,5,5">
+            <!-- Live trend -->
+            <TabItem Header="مباشر">
+                <syncfusion:SfChart x:Name="TrendChart" Margin="5">
+                    <!-- Category axis spaces points evenly per update, so the chart scrolls
+                         one slot per tick and the update interval is visible. -->
+                    <syncfusion:SfChart.PrimaryAxis>
+                        <syncfusion:CategoryAxis LabelFormat="HH:mm:ss" ShowGridLines="False" />
+                    </syncfusion:SfChart.PrimaryAxis>
+                    <syncfusion:SfChart.SecondaryAxis>
+                        <syncfusion:NumericalAxis />
+                    </syncfusion:SfChart.SecondaryAxis>
+                    <syncfusion:LineSeries ItemsSource="{Binding TrendVM.TrendData}"
+                                           XBindingPath="Timestamp" 
+                                           YBindingPath="Value"
+                                           StrokeThickness="2"
+                                           Interior="#0066CC">
+                    </syncfusion:LineSeries>
+                </syncfusion:SfChart>
+            </TabItem>
+
+            <!-- Historical trend from the database: mouse wheel / selection to zoom, drag to pan,
+                 hover for values. All built-in SfChart behaviours. -->
+            <TabItem Header="سجل تاريخي (8 ساعات)">
+                <syncfusion:SfChart x:Name="HistoryChart" Margin="5">
+                    <syncfusion:SfChart.PrimaryAxis>
+                        <syncfusion:DateTimeAxis LabelFormat="HH:mm" ShowGridLines="False" />
+                    </syncfusion:SfChart.PrimaryAxis>
+                    <syncfusion:SfChart.SecondaryAxis>
+                        <syncfusion:NumericalAxis Minimum="0" Maximum="100" />
+                    </syncfusion:SfChart.SecondaryAxis>
+                    <syncfusion:SfChart.Legend>
+                        <syncfusion:ChartLegend DockPosition="Top" />
+                    </syncfusion:SfChart.Legend>
+                    <syncfusion:SfChart.Behaviors>
+                        <syncfusion:ChartZoomPanBehavior EnableMouseWheelZooming="True" EnablePanning="True"
+                                                         EnableSelectionZooming="True" ZoomMode="X" ResetOnDoubleTap="True" />
+                        <syncfusion:ChartTrackBallBehavior ShowLine="True" />
+                    </syncfusion:SfChart.Behaviors>
+                    <syncfusion:FastLineSeries Label="درجة الحرارة" ItemsSource="{Binding TrendVM.TemperatureHistory}"
+                                               XBindingPath="Timestamp" YBindingPath="Value" Interior="#0066CC" />
+                    <syncfusion:FastLineSeries Label="الضغط" ItemsSource="{Binding TrendVM.PressureHistory}"
+                                               XBindingPath="Timestamp" YBindingPath="Value" Interior="#00897B" />
+                    <syncfusion:FastLineSeries Label="الرطوبة" ItemsSource="{Binding TrendVM.HumidityHistory}"
+                                               XBindingPath="Timestamp" YBindingPath="Value" Interior="#EF6C00" />
+                </syncfusion:SfChart>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

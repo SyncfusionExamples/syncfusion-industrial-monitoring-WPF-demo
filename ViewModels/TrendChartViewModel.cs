@@ -29,6 +29,11 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             set { _isLiveUpdating = value; RaisePropertyChanged(nameof(IsLiveUpdating)); }
         }
 
+        // Historical readings from the database, one series per sensor
+        public List<TrendDataPoint> TemperatureHistory { get; }
+        public List<TrendDataPoint> PressureHistory { get; }
+        public List<TrendDataPoint> HumidityHistory { get; }
+
         public int MaxPoints
         {
             get => _maxPoints;
@@ -46,6 +51,10 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             foreach (var t in trends)
                 TrendData.Add(t);
             _nextId = TrendData.Count;
+
+            TemperatureHistory = _dataService.GetSensorHistory(ArabicMap.SensorTemperature);
+            PressureHistory = _dataService.GetSensorHistory(ArabicMap.SensorPressure);
+            HumidityHistory = _dataService.GetSensorHistory(ArabicMap.SensorHumidity);
 
             // Subscribe to live updates
             _liveService.Subscribe(OnLiveUpdate);
