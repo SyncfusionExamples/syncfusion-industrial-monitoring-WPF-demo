@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"           
              xmlns:syncfusion="clr-namespace:Syncfusion.UI.Xaml.Gauges;assembly=Syncfusion.SfGauge.Wpf"
-             Background="White">
+             Background="{DynamicResource CardBackground}">
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0">
             <!-- Horizontal Linear Gauge for Temperature -->
@@ -10,7 +10,7 @@
             <syncfusion:SfLinearGauge Orientation="Horizontal" Width="Auto" Height="60" Margin="0,0,0,8">
                 <syncfusion:SfLinearGauge.MainScale>
                     <syncfusion:LinearScale Minimum="0" Maximum="100" Interval="20"
-                                           ScaleBarStroke="#E0E0E0" LabelStroke="#424242"
+                                           ScaleBarStroke="{DynamicResource CardBorder}" LabelStroke="{DynamicResource TextSecondary}"
                                            MajorTickStroke="Gray" MajorTickSize="10"
                                            MinorTickStroke="Gray" MinorTickSize="5"
                                            MinorTicksPerInterval="1"
@@ -38,7 +38,7 @@
             <syncfusion:SfLinearGauge Orientation="Horizontal" Width="Auto" Height="60">
                 <syncfusion:SfLinearGauge.MainScale>
                     <syncfusion:LinearScale Minimum="0" Maximum="100" Interval="20"
-                                           ScaleBarStroke="#E0E0E0" LabelStroke="#424242"
+                                           ScaleBarStroke="{DynamicResource CardBorder}" LabelStroke="{DynamicResource TextSecondary}"
                                            MajorTickStroke="Gray" MajorTickSize="10"
                                            MinorTickStroke="Gray" MinorTickSize="5"
                                            MinorTicksPerInterval="1"

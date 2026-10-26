@@ -47,7 +47,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
             double next = Math.Clamp(current + drift, config.MinValue, config.MaxValue);
 
             _lastValues[sensorName] = next;
-            _lastTimestamps[sensorName] = DateTime.UtcNow;
+            _lastTimestamps[sensorName] = DateTime.Now;
 
             var quality = next > config.AlarmThreshold ? DataQuality.Bad
                         : next > config.WarningThreshold ? DataQuality.Stale
@@ -59,7 +59,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
                 Name = sensorName,
                 Value = Math.Round(next, 2),
                 Unit = config.Unit,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.Now,
                 Quality = quality
             };
         }
@@ -122,12 +122,51 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
                     Name = sensorName,
                     Value = value,
                     Unit = config.Unit,
-                    Timestamp = DateTime.UtcNow,
+                    Timestamp = DateTime.Now,
                     Quality = value > config.AlarmThreshold ? DataQuality.Bad : (value > config.WarningThreshold ? DataQuality.Stale : DataQuality.Good)
                 };
             }
 
             return null;
+        }
+
+        /// <summary>Historical readings for one sensor from the read-only database, oldest first.</summary>
+        public List<TrendDataPoint> GetSensorHistory(string sensorName)
+        {
+            var history = new List<TrendDataPoint>();
+            try
+            {
+                using var connection = new SqliteConnection(_readOnlyConnectionString);
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = @"
+                    SELECT Id, Value, Unit, DataQuality, Timestamp
+                    FROM SensorReadings
+                    WHERE SensorName = @sensorName
+                    ORDER BY Timestamp
+                ";
+                command.Parameters.AddWithValue("@sensorName", sensorName);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    history.Add(new TrendDataPoint
+                    {
+                        Id = reader.GetInt32(0),
+                        Name = sensorName,
+                        Value = reader.GetDouble(1),
+                        Unit = ArabicMap.UnitFromDb(reader.GetString(2)),
+                        Quality = ArabicMap.DataQualityFromDb(reader.GetString(3)),
+                        // Stored as UTC round-trip strings; parsed to local time like the live data
+                        Timestamp = DateTime.Parse(reader.GetString(4), System.Globalization.CultureInfo.InvariantCulture)
+                    });
+                }
+            }
+            catch
+            {
+                // Empty history if the database is unavailable
+            }
+            return history;
         }
 
         public List<AlarmEvent> GetSampleAlarms(int count = 100)
@@ -184,7 +223,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
             // Build a smooth, strictly forward-moving time series in memory so the
             // trend chart always renders a proper sequential line (no flat/backward
             // segments) regardless of the database state.
-            var endTime = DateTime.UtcNow;
+            var endTime = DateTime.Now;
             var startTime = endTime.AddSeconds(-count * 2);
 
             // Start temperature around the middle of the operating range (0-100).

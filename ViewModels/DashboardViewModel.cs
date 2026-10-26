@@ -19,6 +19,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         private AlarmGridViewModel _alarmVM;
         private readonly ReportService _reportService;
         private readonly IDialogService _dialogService;
+        private bool _isDarkTheme;
         private bool _isLiveUpdating = true;
         private int _updateInterval = 100;
         private StatusSummary _statusSummary;
@@ -74,6 +75,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         }
 
         public ICommand ToggleRtlCommand { get; }
+        public ICommand ToggleThemeCommand { get; }
         public ICommand ExportPdfReportCommand { get; }
         public ICommand ExportExcelReportCommand { get; }
 
@@ -92,12 +94,17 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             _gaugeVM = new GaugeViewModel(_dataService, _liveService);
             _alarmVM = new AlarmGridViewModel(_dataService);
 
-            StatusSummary = new StatusSummary { LastUpdateTime = DateTime.UtcNow };
+            StatusSummary = new StatusSummary { LastUpdateTime = DateTime.Now };
 
             // Subscribe to alarms
             _gaugeVM.AlarmRaised += (alarm) => _alarmVM.AddAlarm(alarm);
 
             ToggleRtlCommand = CreateCommand(ToggleRtl);
+            ToggleThemeCommand = CreateCommand(() =>
+            {
+                _isDarkTheme = !_isDarkTheme;
+                ThemeService.Apply(Application.Current.MainWindow, _isDarkTheme);
+            });
             ExportPdfReportCommand = CreateCommand(() => ExportReport(
                 "تصدير تقرير PDF", "ملف PDF (*.pdf)|*.pdf", "pdf", _reportService.GeneratePdfReport));
             ExportExcelReportCommand = CreateCommand(() => ExportReport(

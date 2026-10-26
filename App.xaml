@@ -3,5 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Dashboard surface colours (light theme). ThemeService swaps them for dark. -->
+        <SolidColorBrush x:Key="PageBackground" Color="#F5F5F5" />
+        <SolidColorBrush x:Key="CardBackground" Color="White" />
+        <SolidColorBrush x:Key="CardBorder" Color="#E0E0E0" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#1A1A1A" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#666666" />
     </Application.Resources>
 </Application>

@@ -97,7 +97,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
                 AlarmRaised?.Invoke(new AlarmEvent
                 {
                     EventId = ++_nextEventId,
-                    Timestamp = DateTime.UtcNow,
+                    Timestamp = DateTime.Now,
                     Source = reading.Name,
                     Severity = AlarmSeverity.Critical,
                     Message = $"تجاوز {reading.Name} حد الإنذار: {reading.Value:F1}",

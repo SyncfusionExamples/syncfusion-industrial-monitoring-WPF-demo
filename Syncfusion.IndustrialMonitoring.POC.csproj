@@ -18,6 +18,7 @@
     <PackageReference Include="Syncfusion.SfBulletGraph.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.SfSkinManager.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.Shared.WPF" Version="35.1.41" />
+    <PackageReference Include="Syncfusion.Themes.Windows11Dark.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.Themes.Windows11Light.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.DataGridExcelExport.WPF" Version="35.1.41" />
     <PackageReference Include="Syncfusion.XlsIO.Wpf" Version="35.1.41" />

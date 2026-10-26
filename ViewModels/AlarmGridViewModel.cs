@@ -42,7 +42,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             if (alarm == null) return;
             alarm.Status = ArabicMap.StatusAck;
             alarm.AcknowledgedBy = ArabicMap.Admin;
-            alarm.AcknowledgedTime = DateTime.UtcNow;
+            alarm.AcknowledgedTime = DateTime.Now;
             RaisePropertyChanged(nameof(AlarmHistory));
         }
 

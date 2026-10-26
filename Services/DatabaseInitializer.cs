@@ -22,7 +22,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
 
         // Bump this version when the seed data changes so existing databases are
         // re-created with the latest seed data (severity stored as English enum).
-        private const int SchemaVersion = 4;
+        private const int SchemaVersion = 5;
 
         public static string GetReadOnlyConnectionString()
         {
@@ -82,6 +82,8 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
         {
             try
             {
+                // Pooled connections (e.g. from the version check) keep the file locked
+                SqliteConnection.ClearAllPools();
                 var fileInfo = new FileInfo(DbPath);
                 fileInfo.Attributes &= ~FileAttributes.ReadOnly;
                 fileInfo.Delete();
@@ -170,31 +172,38 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
             var random = new Random(42); // Fixed seed for reproducible data
             var sensorNames = new[] { ArabicMap.SensorTemperature, ArabicMap.SensorPressure, ArabicMap.SensorHumidity };
             var units = new[] { ArabicMap.ToArabic(Unit.Celsius), ArabicMap.ToArabic(Unit.Bar), ArabicMap.ToArabic(Unit.Percent) };
-            var baseTime = DateTime.UtcNow.AddMinutes(-500);
+            const int readingsPerSensor = 480; // 8 hours at one reading per minute
+            var baseTime = DateTime.UtcNow.AddMinutes(-readingsPerSensor);
+            var startValues = new[] { 55.0, 50.0, 60.0 };
 
+            using (var transaction = connection.BeginTransaction())
             using (var command = connection.CreateCommand())
             {
+                command.Transaction = transaction;
                 command.CommandText = @"
                     INSERT INTO SensorReadings (SensorName, Value, Unit, DataQuality, Timestamp)
                     VALUES (@sensorName, @value, @unit, @quality, @timestamp)
                 ";
 
-                for (int i = 0; i < 500; i++)
+                for (int sensorIndex = 0; sensorIndex < sensorNames.Length; sensorIndex++)
                 {
-                    int sensorIndex = i % 3;
-                    double value = random.Next(0, 101) * (random.NextDouble() * 0.1 + 0.95); // Smooth variation
-                    var quality = value > 90 ? ArabicMap.ToArabic(DataQuality.Bad) : (value > 70 ? ArabicMap.ToArabic(DataQuality.Stale) : ArabicMap.ToArabic(DataQuality.Good));
-                    var timestamp = baseTime.AddMinutes(i).ToString("O");
+                    // Smooth random walk so the historical trend looks like a real process value
+                    double value = startValues[sensorIndex];
+                    for (int i = 0; i < readingsPerSensor; i++)
+                    {
+                        value = Math.Clamp(value + (random.NextDouble() - 0.5) * 3, 5, 98);
+                        var quality = value > 90 ? ArabicMap.ToArabic(DataQuality.Bad) : (value > 70 ? ArabicMap.ToArabic(DataQuality.Stale) : ArabicMap.ToArabic(DataQuality.Good));
 
-                    command.Parameters.Clear();
-                    command.Parameters.AddWithValue("@sensorName", sensorNames[sensorIndex]);
-                    command.Parameters.AddWithValue("@value", Math.Round(value, 2));
-                    command.Parameters.AddWithValue("@unit", units[sensorIndex]);
-                    command.Parameters.AddWithValue("@quality", quality);
-                    command.Parameters.AddWithValue("@timestamp", timestamp);
-
-                    command.ExecuteNonQuery();
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@sensorName", sensorNames[sensorIndex]);
+                        command.Parameters.AddWithValue("@value", Math.Round(value, 2));
+                        command.Parameters.AddWithValue("@unit", units[sensorIndex]);
+                        command.Parameters.AddWithValue("@quality", quality);
+                        command.Parameters.AddWithValue("@timestamp", baseTime.AddMinutes(i).ToString("O"));
+                        command.ExecuteNonQuery();
+                    }
                 }
+                transaction.Commit();
             }
         }
 
