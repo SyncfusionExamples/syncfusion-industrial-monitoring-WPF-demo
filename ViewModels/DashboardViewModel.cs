@@ -18,7 +18,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         private GaugeViewModel _gaugeVM;
         private AlarmGridViewModel _alarmVM;
         private bool _isLiveUpdating = true;
-        private int _updateInterval = 100;
+        private int _updateInterval = 100; // Fixed update interval (100ms - faster and smoother)
         private StatusSummary _statusSummary;
         private FlowDirection _flowDirection = FlowDirection.RightToLeft;
 
@@ -87,6 +87,8 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
 
             ToggleRtlCommand = CreateCommand(ToggleRtl);
 
+            // Set the update interval before starting the service
+            _liveService.UpdateInterval = _updateInterval;
             _liveService.Start();
             UpdateStatus();
 

@@ -26,8 +26,6 @@
                 <CheckBox IsChecked="{Binding IsLiveUpdating}" VerticalAlignment="Center" Margin="0,0,10,0">
                     <TextBlock Text="مباشر" Foreground="White" VerticalAlignment="Center"/>
                 </CheckBox>
-                <TextBlock Text="الفاصل الزمني (مللي ثانية):" Foreground="White" VerticalAlignment="Center" Margin="0,0,5,0" />
-                <Slider Value="{Binding UpdateInterval}" Minimum="50" Maximum="1000" Width="150" VerticalAlignment="Center" Margin="0,0,10,0" />
                 <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource RtlIconTemplate}" />
             </StackPanel>
         </Border>
