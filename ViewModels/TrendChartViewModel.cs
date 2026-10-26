@@ -12,7 +12,8 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
     {
         private ObservableCollection<TrendDataPoint> _trendData;
         private bool _isLiveUpdating = true;
-        private int _maxPoints = 500;
+        private int _maxPoints = 200;
+        private int _nextId;
         private DataService _dataService;
         private LiveUpdateService _liveService;
 
@@ -41,9 +42,10 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             TrendData = new ObservableCollection<TrendDataPoint>();
 
             // Initialize with synthetic data
-            var trends = _dataService.GenerateSyntheticTrend(200);
+            var trends = _dataService.GenerateSyntheticTrend(MaxPoints);
             foreach (var t in trends)
                 TrendData.Add(t);
+            _nextId = TrendData.Count;
 
             // Subscribe to live updates
             _liveService.Subscribe(OnLiveUpdate);
@@ -58,7 +60,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             {
                 var point = new TrendDataPoint
                 {
-                    Id = TrendData.Count,
+                    Id = _nextId++,
                     Name = tempReading.Name,
                     Value = tempReading.Value,
                     Unit = tempReading.Unit,
@@ -68,7 +70,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
 
                 TrendData.Add(point);
 
-                if (TrendData.Count > MaxPoints)
+                while (TrendData.Count > MaxPoints)
                     TrendData.RemoveAt(0);
             }
         }

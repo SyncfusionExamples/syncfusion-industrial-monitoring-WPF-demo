@@ -22,19 +22,14 @@ namespace Syncfusion.IndustrialMonitoring.POC.Services
                 if (_updateInterval == value) return;
                 _updateInterval = value;
                 
-                // If running, restart with new interval
-                if (IsRunning)
-                {
-                    _timer.Stop();
-                    _timer.Interval = TimeSpan.FromMilliseconds(value);
-                    _timer.Start();
-                }
+                // Setting Interval on a running DispatcherTimer restarts it with the new value
+                _timer.Interval = TimeSpan.FromMilliseconds(value);
             }
         }
 
-        public LiveUpdateService()
+        public LiveUpdateService(DataService dataService)
         {
-            _dataService = new DataService();
+            _dataService = dataService;
             _timer = new DispatcherTimer();
             _timer.Tick += (s, e) => FireUpdate();
         }

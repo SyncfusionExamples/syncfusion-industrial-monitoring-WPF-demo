@@ -48,6 +48,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
                 {
                     _liveService.Stop();
                 }
+                _trendVM.IsLiveUpdating = value;
                 RaisePropertyChanged(nameof(IsLiveUpdating));
             }
         }
@@ -57,6 +58,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
             get => _updateInterval;
             set
             {
+                if (_updateInterval == value) return;
                 _updateInterval = value;
                 _liveService.UpdateInterval = value;
                 RaisePropertyChanged(nameof(UpdateInterval));
@@ -74,7 +76,7 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         public DashboardViewModel()
         {
             _dataService = new DataService();
-            _liveService = new LiveUpdateService();
+            _liveService = new LiveUpdateService(_dataService);
 
             _trendVM = new TrendChartViewModel(_dataService, _liveService);
             _gaugeVM = new GaugeViewModel(_dataService, _liveService);
