@@ -29,7 +29,7 @@
                                   Label="تصدير الصورة"
                                   Height="32" Width="130"
                                   VerticalAlignment="Center" HorizontalAlignment="Right"
-                                  SizeMode="Normal" IconTemplate="{StaticResource ImageIconTemplate}"
+                                  SizeMode="Normal" IconHeight="0" IconWidth="0"
                                   Click="OnExportImageClick"/>
         </Grid>
 

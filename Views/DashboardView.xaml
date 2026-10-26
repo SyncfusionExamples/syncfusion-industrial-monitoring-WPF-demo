@@ -45,10 +45,10 @@
                         TickFrequency="50" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True"
                         Width="150" VerticalAlignment="Center" Margin="0,0,5,0" />
                 <TextBlock Text="{Binding UpdateInterval}" Foreground="White" VerticalAlignment="Center" MinWidth="35" Margin="0,0,10,0" />
-                <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource RtlIconTemplate}" />
-                <syncfusion:ButtonAdv x:Name="toggleThemeButton" Command="{Binding ToggleThemeCommand}" Label="فاتح / داكن" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ThemeIconTemplate}" />
-                <syncfusion:ButtonAdv x:Name="exportPdfReportButton" Command="{Binding ExportPdfReportCommand}" Label="تقرير PDF" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
-                <syncfusion:ButtonAdv x:Name="exportExcelReportButton" Command="{Binding ExportExcelReportCommand}" Label="تقرير Excel" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
+                <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconHeight="0" IconWidth="0"/>
+                <syncfusion:ButtonAdv x:Name="toggleThemeButton" Command="{Binding ToggleThemeCommand}" Label="فاتح / داكن" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconHeight="0" IconWidth="0"/>
+                <syncfusion:ButtonAdv x:Name="exportPdfReportButton" Command="{Binding ExportPdfReportCommand}" Label="تقرير PDF" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconHeight="0" IconWidth="0"/>
+                <syncfusion:ButtonAdv x:Name="exportExcelReportButton" Command="{Binding ExportExcelReportCommand}" Label="تقرير Excel" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconHeight="0" IconWidth="0"/>
             </StackPanel>
         </Border>
 
