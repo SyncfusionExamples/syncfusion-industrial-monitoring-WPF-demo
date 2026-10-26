@@ -13,6 +13,13 @@
                       Fill="#FFFFFF" Stretch="Fill"/>
             </Grid>
         </DataTemplate>
+        <!-- Report Icon -->
+        <DataTemplate x:Key="ReportIconTemplate">
+            <Grid Width="16" Height="16">
+                <Path Data="M14,2H6C4.9,2 4,2.9 4,4v16c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2V8l-6,-6zM16,18H8v-2h8v2zM16,14H8v-2h8v2zM13,9V3.5L18.5,9H13z"
+                      Fill="#FFFFFF" Stretch="Fill"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -32,6 +39,8 @@
                         Width="150" VerticalAlignment="Center" Margin="0,0,5,0" />
                 <TextBlock Text="{Binding UpdateInterval}" Foreground="White" VerticalAlignment="Center" MinWidth="35" Margin="0,0,10,0" />
                 <syncfusion:ButtonAdv Command="{Binding ToggleRtlCommand}" Label="تبديل الاتجاه" Height="32" Width="120" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource RtlIconTemplate}" />
+                <syncfusion:ButtonAdv x:Name="exportPdfReportButton" Command="{Binding ExportPdfReportCommand}" Label="تقرير PDF" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
+                <syncfusion:ButtonAdv x:Name="exportExcelReportButton" Command="{Binding ExportExcelReportCommand}" Label="تقرير Excel" Height="32" Width="110" Margin="10,0,0,0" VerticalAlignment="Center" SizeMode="Normal" IconTemplate="{StaticResource ReportIconTemplate}" />
             </StackPanel>
         </Border>
 

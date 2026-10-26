@@ -15,6 +15,9 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
         private GaugeConfiguration _pressureConfig;
         private GaugeConfiguration _humidityConfig;
         private LiveUpdateService _liveService;
+        private const double AlarmDeadband = 5.0;
+        private readonly HashSet<string> _sensorsInAlarm = new();
+        private int _nextEventId = 100000;
 
         public event Action<AlarmEvent> AlarmRaised;
 
@@ -76,11 +79,24 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
                 _ => null
             };
 
-            if (config != null && reading.Value > config.AlarmThreshold)
+            if (config == null) return;
+
+            // Edge-triggered with hysteresis: raise one alarm when the value crosses
+            // the threshold, and re-arm only after it falls below threshold - deadband.
+            // Without this a value hovering above the limit raised an alarm every tick.
+            if (_sensorsInAlarm.Contains(reading.Name))
             {
+                if (reading.Value < config.AlarmThreshold - AlarmDeadband)
+                    _sensorsInAlarm.Remove(reading.Name);
+                return;
+            }
+
+            if (reading.Value > config.AlarmThreshold)
+            {
+                _sensorsInAlarm.Add(reading.Name);
                 AlarmRaised?.Invoke(new AlarmEvent
                 {
-                    EventId = DateTime.Now.Millisecond,
+                    EventId = ++_nextEventId,
                     Timestamp = DateTime.UtcNow,
                     Source = reading.Name,
                     Severity = AlarmSeverity.Critical,
@@ -89,6 +105,14 @@ namespace Syncfusion.IndustrialMonitoring.POC.ViewModels
                 });
             }
         }
+
+        /// <summary>Current value of every sensor together with its limits.</summary>
+        public IReadOnlyList<SensorSnapshot> GetSnapshots() => new[]
+        {
+            new SensorSnapshot { Config = _tempConfig, Value = TemperatureValue },
+            new SensorSnapshot { Config = _pressureConfig, Value = PressureValue },
+            new SensorSnapshot { Config = _humidityConfig, Value = HumidityValue }
+        };
 
         public void Cleanup()
         {

@@ -10,9 +10,11 @@ namespace Syncfusion.IndustrialMonitoring.POC
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            // Register Syncfusion license FIRST (before any controls are created)
-
-            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JBaF5cXGhAd1p/WGJbYl1xZFdFallYTnNWSV9jS3hTcURkWHddeXVXQ2dbVU91Wg==");
+            // Register Syncfusion license FIRST (before any controls are created).
+            // The key is read from the environment or a git-ignored file, never from source.
+            var licenseKey = LicenseKeyProvider.GetLicenseKey();
+            if (licenseKey != null)
+                SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
             // Set default culture to Arabic (for date/time formatting, number formatting, etc.)
             var arabicCulture = new CultureInfo("ar-SA");
